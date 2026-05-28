@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LI & Enrich 製品概要クイズ</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Meiryo UI',Meiryo,'Hiragino Kaku Gothic ProN',sans-serif;background:#f5f5f2;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem}
+.wrap{width:100%;max-width:640px}
+.header{margin-bottom:1.5rem}
+.header h1{font-size:18px;font-weight:500;color:#1a1a1a;margin-bottom:4px}
+.header p{font-size:13px;color:#888}
+.notice{background:#f9f9f7;border:1px solid #e8e8e4;border-radius:8px;padding:10px 14px;font-size:12px;color:#888;margin-bottom:1.25rem;line-height:1.7;text-align:center}
+.card{background:#fff;border-radius:12px;border:1px solid #e8e8e4;padding:1.75rem}
+.pbar-wrap{height:4px;background:#e8e8e4;border-radius:2px;margin-bottom:1.5rem}
+.pbar{height:4px;background:#1D9E75;border-radius:2px;transition:width 0.4s}
+.qlbl{font-size:12px;color:#888;margin-bottom:.5rem;font-weight:500}
+.qtxt{font-size:16px;font-weight:500;color:#1a1a1a;margin-bottom:1rem;line-height:1.65}
+.tag{display:inline-block;font-size:11px;padding:3px 10px;border-radius:20px;margin-bottom:1rem;font-weight:500}
+.tag.product{background:#E6F1FB;color:#0C447C}
+.tag.data{background:#E1F5EE;color:#085041}
+.opt{display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;background:#fff;border:1px solid #e0e0dc;border-radius:8px;padding:12px 14px;margin-bottom:8px;cursor:pointer;font-size:14px;color:#1a1a1a;line-height:1.5;transition:border-color .15s,background .15s}
+.opt:hover:not(:disabled){border-color:#aaa;background:#fafaf8}
+.opt.selected{border-color:#1D9E75;background:#E1F5EE;color:#085041}
+.opt.correct{border-color:#1D9E75;background:#E1F5EE;color:#085041}
+.opt.wrong{border-color:#D85A30;background:#FAECE7;color:#4A1B0C}
+.opt:disabled{cursor:default}
+.okey{font-weight:500;min-width:20px;color:#aaa;flex-shrink:0}
+.opt.selected .okey{color:#0F6E56}
+.opt.correct .okey{color:#0F6E56}
+.opt.wrong .okey{color:#993C1D}
+.fb{margin-top:1rem;padding:12px 14px;border-radius:8px;font-size:13px;line-height:1.65;display:none}
+.fb.ok{background:#E1F5EE;color:#085041;border:1px solid #9FE1CB}
+.fb.ng{background:#FAECE7;color:#4A1B0C;border:1px solid #F5C4B3}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem}
+.nbtn{padding:9px 22px;border-radius:8px;border:1px solid #e0e0dc;background:#fff;font-size:14px;cursor:pointer;color:#1a1a1a;font-family:inherit;transition:background .15s}
+.nbtn:hover{background:#f5f5f2}
+.nbtn.p{background:#0F6E56;color:#fff;border-color:#0F6E56}
+.nbtn.p:hover{background:#085041}
+.nbtn:disabled{opacity:.35;cursor:default}
+.ctr{font-size:13px;color:#888}
+.confirm-row{margin-top:1rem;text-align:right}
+.confirm-btn{padding:9px 22px;border-radius:8px;background:#0F6E56;color:#fff;border:none;font-size:14px;cursor:pointer;font-family:inherit}
+.confirm-btn:hover{background:#085041}
+.confirm-btn:disabled{opacity:.35;cursor:default}
+.scr{text-align:center;padding:1.5rem 0}
+.scn{font-size:52px;font-weight:500;color:#1D9E75;margin-bottom:.25rem}
+.scl{font-size:14px;color:#888;margin-bottom:1.25rem}
+.scm{font-size:15px;color:#1a1a1a;margin-bottom:1.75rem;line-height:1.75}
+.retry-btn{display:block;width:100%;padding:10px;background:#0F6E56;color:#fff;border:none;border-radius:8px;font-size:15px;cursor:pointer;font-family:inherit}
+.retry-btn:hover{background:#085041}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1>LI & Enrich 製品概要クイズ</h1>
+    <p>第3回概要のミーティングまでに確認しておきましょう（全10問・各問1つ選択）</p>
+  </div>
+  <div class="notice">このクイズはご自身の理解度を確認するためのものです。スコアや実施の有無は記録・報告されません。気軽に取り組んでください。</div>
+  <div class="card" id="card"></div>
+</div>
+<script>
+var qs=[
+  {cat:"product",q:"MapInfo Proはどんなソフトですか？",
+   opts:["地図データがバンドルされたパッケージGIS製品","デスクトップ型のGIS分析ソフト","Webブラウザ用の地図ツール","道路ネットワークデータが入ったWEBアプリ"],
+   ans:1,exp:"MapInfo ProはデスクトップGISソフトです。手元で地図を使った分析・可視化ができます。"},
+  {cat:"product",q:"MapXtremeはどのような製品ですか？",
+   opts:["住所データを自動でクレンジングするツール","リアルタイムで株価と地図を連携するシステム","GIS機能を業務アプリに組み込む開発者向けSDK","SNSの投稿を地図上に可視化するツール"],
+   ans:2,exp:"MapXtremeはGIS機能を業務アプリに組み込むための開発者向けSDKです。経営層や営業担当が使うアプリの裏側で動いていることもありますが、直接操作するのは開発者です。"},
+  {cat:"product",q:"SSI（Spectrum Spatial Insights）とは何ですか？",
+   opts:["住所データをジオコーディングするためのAPI","地図分析の結果をWeb上で共有するためのツール","出店計画・立地選定など店舗ビジネスの意思決定を支援するSaaS","GIS機能を業務アプリに組み込むための開発者向けSDK"],
+   ans:2,exp:"SSIは出店計画・立地選定・商圏分析など、リアル店舗ビジネスの意思決定支援に使うSaaSです。"},
+  {cat:"product",q:"ルーティング（経路探索）機能を使うと何ができますか？",
+   opts:["住所を座標に変換する","地図画像を生成する","経路探索・到達圏の算出ができる","人口統計データを付加する"],
+   ans:2,exp:"ルーティングは経路探索・到達圏（◯分圏）の算出ができる機能です。物流・フィールドサービスなどに活用されます。"},
+  {cat:"data",q:"ジオコーディングとは何ですか？",
+   opts:["地図画像を美しく表示する技術","住所から緯度・経度の座標に変換する処理","競合店の位置を自動で探す機能","売上データを地図上に色分けする機能"],
+   ans:1,exp:"ジオコーディングは住所文字列を緯度・経度の座標値に変換する処理です。逆方向（座標→住所）はリバースジオコーディングといいます。"},
+  {cat:"data",q:"PreciselyIDとは何ですか？",
+   opts:["Precisely社の社員番号","住所ごとに一意に割り当てられる識別子","ライセンス認証コード","ジオコーディングの精度スコア"],
+   ans:1,exp:"PreciselyIDは住所ごとに一意に割り当てられる識別子で、数百のデータセットと紐づけることができます。"},
+  {cat:"data",q:"Enrich製品で提供されるデータとして正しいのはどれですか？",
+   opts:["住所・建物情報、人口統計、災害リスク、店舗・施設情報","住所・建物情報、株価データ、SNS分析、採用情報","人口統計、気象予報、実際の売上実績、ルート情報","店舗・施設情報、個人の確定申告、災害リスク、人口統計"],
+   ans:0,exp:"Enrichは住所・建物情報、人口統計（デモグラフィクス）、災害リスク、店舗・施設情報（POI）など幅広いデータを提供しています。"},
+  {cat:"data",q:"ライフスタイルデータとは何ですか？",
+   opts:["個人の移動経路や滞在場所を記録したモビリティデータ","年齢・世帯収入・購買傾向などで消費者をグループ分けしたデータ","建物の築年数や構造を記録した物件データ","道路の混雑状況をリアルタイムで示す交通データ"],
+   ans:1,exp:"ライフスタイルデータは年齢・世帯収入・購買傾向などで消費者をグループ分けしたデータです。PSYTEセグメントなどがこれにあたります。"},
+  {cat:"data",q:"StreetProとはどんなデータですか？",
+   opts:["世界中の店舗・施設情報（POI）を収録したデータ","人口統計・ライフスタイルを収録したデモグラフィクスデータ","道路ネットワーク・交通量・ルート情報を収録したデータ","住所・建物の物件属性データ"],
+   ans:2,exp:"StreetProは道路ネットワーク・交通量・ルート情報を収録したデータです。Display・Navigation・Trafficなどのラインナップがあります。"},
+  {cat:"product",q:"ロケーションインテリジェンス（LI）を一言で言うと何ですか？",
+   opts:["住所データを緯度・経度に変換する技術","位置情報を活用してビジネスの意思決定を支援する仕組み","Googleマップのような地図表示サービス","GISソフトウェアの総称"],
+   ans:1,exp:"LIとは位置情報をビジネスデータと組み合わせ、出店・リスク・商圏などの意思決定を支援する仕組みです。"}
+];
+
+var cur=0,score=0,answered=0,history=[],selected=null;
+
+function renderQuiz(){
+  var q=qs[cur];
+  var keys=['A','B','C','D'];
+  var backBtn=cur>0?'<button class="nbtn" onclick="goBack()" style="margin-right:8px">← 前の問題</button>':'';
+  var nextLabel=cur===qs.length-1?'結果を見る':'次の問題 →';
+  var savedAns=history[cur];
+  selected=savedAns!==undefined?savedAns:null;
+
+  var optsHtml=q.opts.map(function(o,i){
+    var cls='opt';
+    if(savedAns!==undefined){
+      if(i===q.ans)cls+=' correct';
+      else if(i===savedAns&&savedAns!==q.ans)cls+=' wrong';
+    } else if(selected===i){
+      cls+=' selected';
+    }
+    return '<button class="'+cls+'" id="o'+i+'" '+(savedAns!==undefined?'disabled':'')+' onclick="pick('+i+')">'+
+      '<span class="okey">'+keys[i]+'</span><span>'+o+'</span></button>';
+  }).join('');
+
+  var confirmHtml=savedAns===undefined?
+    '<div class="confirm-row"><button class="confirm-btn" id="confirmBtn" disabled onclick="submitAnswer()">回答を確定する</button></div>':'';
+
+  var fbHtml='<div class="fb '+(savedAns!==undefined?(savedAns===q.ans?'ok':'ng'):'')+'" style="display:'+(savedAns!==undefined?'block':'none')+'">'+
+    (savedAns!==undefined?(savedAns===q.ans?q.exp:'残念！正解は「'+q.opts[q.ans]+'」でした。'+q.exp):'')+'</div>';
+
+  document.getElementById('card').innerHTML=
+    '<div class="pbar-wrap"><div class="pbar" style="width:'+((cur+1)/qs.length*100)+'%"></div></div>'+
+    '<div class="qlbl">問題 '+(cur+1)+' / '+qs.length+'</div>'+
+    '<div class="qtxt">'+q.q+'</div>'+
+    '<div>'+(q.cat==='product'?'<span class="tag product">製品</span>':'<span class="tag data">データ</span>')+'</div>'+
+    '<div id="opts" style="margin-top:1rem">'+optsHtml+'</div>'+
+    confirmHtml+
+    fbHtml+
+    '<div class="nav">'+
+      '<span class="ctr">正解: '+score+' / '+answered+'</span>'+
+      '<div>'+backBtn+'<button class="nbtn p" id="nbtn" '+(savedAns===undefined?'disabled':'')+' onclick="nextQ()">'+nextLabel+'</button></div>'+
+    '</div>';
+}
+
+function pick(i){
+  if(history[cur]!==undefined)return;
+  selected=i;
+  var keys=['A','B','C','D'];
+  qs[cur].opts.forEach(function(_,j){
+    var b=document.getElementById('o'+j);
+    b.className='opt'+(j===i?' selected':'');
+  });
+  document.getElementById('confirmBtn').disabled=false;
+}
+
+function submitAnswer(){
+  if(selected===null||history[cur]!==undefined)return;
+  var q=qs[cur];
+  var ok=selected===q.ans;
+  if(ok)score++;
+  answered++;
+  history[cur]=selected;
+  renderQuiz();
+}
+
+function nextQ(){
+  cur++;
+  if(cur>=qs.length){showResult();return;}
+  renderQuiz();
+}
+
+function goBack(){
+  cur--;
+  renderQuiz();
+}
+
+function showResult(){
+  var pct=Math.round(score/qs.length*100);
+  var msg='';
+  if(pct>=90)msg='お疲れ様でした！よく理解されていますね。第3回のミーティングが楽しみです😊';
+  else if(pct>=70)msg='お疲れ様でした！あと少しです。気になった問題の箇所を資料でさらっと確認してみてください😊';
+  else if(pct>=50)msg='お疲れ様でした！資料を読み返すと、もっとクリアになると思います。ぜひもう一度挑戦してみてください😊';
+  else msg='お疲れ様でした！資料をゆっくり読んでから、もう一度チャレンジしてみてください。きっと違う結果になりますよ😊';
+
+  document.getElementById('card').innerHTML=
+    '<div class="scr">'+
+    '<div class="scn">'+score+' / '+qs.length+'</div>'+
+    '<div class="scl">'+pct+'% 正解</div>'+
+    '<div class="scm">'+msg+'</div>'+
+    '<button class="retry-btn" onclick="location.reload()">もう一度挑戦する</button>'+
+    '</div>';
+}
+
+renderQuiz();
+</script>
+</body>
+</html>
